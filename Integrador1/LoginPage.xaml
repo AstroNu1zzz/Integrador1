@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Integrador1.LoginPage"
+             Title="">
+
+    <Grid Padding="30" RowDefinitions="Auto, Auto, Auto, Auto, Auto" RowSpacing="20" VerticalOptions="Center">
+
+        <!-- Icono / Imagen -->
+        <Image Source="dotnet_bot.png" HeightRequest="100" Grid.Row="0" HorizontalOptions="Center" />
+
+        <Label Text="Acceso Local" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center" Grid.Row="1"/>
+
+        <!-- Cajas de texto -->
+        <Entry x:Name="TxtUsername" Placeholder="Usuario" Grid.Row="2" />
+        <Entry x:Name="TxtPassword" Placeholder="Contraseña" IsPassword="True" Grid.Row="3" />
+
+        <!-- Botones -->
+        <Grid Grid.Row="4" ColumnDefinitions="*, *" ColumnSpacing="15">
+            <Button Text="Ingresar" Grid.Column="0" Clicked="OnLoginClicked" BackgroundColor="#1a73e8" TextColor="White" />
+            <Button Text="Crear Cuenta" Grid.Column="1" Clicked="OnRegisterClicked" BackgroundColor="Transparent" TextColor="#1a73e8" BorderColor="#1a73e8" BorderWidth="1" />
+        </Grid>
+    </Grid>
+
+</ContentPage>
