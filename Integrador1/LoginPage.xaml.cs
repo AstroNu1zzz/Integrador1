@@ -43,7 +43,7 @@ public partial class LoginPage : ContentPage
             TxtPassword.Text = string.Empty;
 
             // Navegar a MainPage
-            await Navigation.PushAsync(new MainPage());
+            await Navigation.PushAsync(new MainPage(usuarioDb.Id));
         }
         else
         {

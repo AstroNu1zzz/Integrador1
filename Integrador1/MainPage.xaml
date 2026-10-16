@@ -3,38 +3,61 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="Integrador1.MainPage"
-             BackgroundColor="#F8F9FA"
-             Title="Mi Unidad">
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#121212">
 
     <Grid RowDefinitions="Auto, *, Auto" Padding="20,20,20,0">
 
         <!-- CABECERA -->
-        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,20">
-            <Label Text="Mis Archivos" FontSize="26" FontAttributes="Bold" TextColor="#202124" VerticalOptions="Center"/>
-            <Button Grid.Column="1" Text="+ Subir" Clicked="OnUploadClicked" BackgroundColor="#1A73E8" TextColor="White" CornerRadius="8" HeightRequest="45" Padding="20,0" FontAttributes="Bold"/>
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,10,0,25">
+            <Label Text="Mis Archivos" FontSize="28" FontAttributes="Bold" TextColor="#FFFFFF" VerticalOptions="Center"/>
+            <Button Grid.Column="1" Text="+ Subir" Clicked="OnUploadClicked" BackgroundColor="#0A84FF" TextColor="#FFFFFF" CornerRadius="12" HeightRequest="45" Padding="20,0" FontAttributes="Bold" />
         </Grid>
 
-        <!-- LISTA DE ARCHIVOS (ESTILO TARJETAS) -->
+        <!-- LISTA DE ARCHIVOS -->
         <CollectionView x:Name="ListaArchivos" Grid.Row="1" SelectionMode="Single" SelectionChanged="OnArchivoSeleccionado">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Border Stroke="#E0E0E0" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="White" Margin="0,0,0,12" Padding="15">
-                        <Border.Shadow>
-                            <Shadow Brush="#000000" Offset="0,2" Radius="4" Opacity="0.05"/>
-                        </Border.Shadow>
-                        <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="15">
+                    <!-- VisualStateManager para controlar el color al seleccionar (Quita el naranja) -->
+                    <Border Stroke="#2C2C2C" StrokeThickness="1" StrokeShape="RoundRectangle 16" Margin="0,0,0,12" Padding="15">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup Name="CommonStates">
+                                <VisualState Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Property="BackgroundColor" Value="#1E1E1E" />
+                                        <Setter Property="Stroke" Value="#2C2C2C" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState Name="Selected">
+                                    <VisualState.Setters>
+                                        <Setter Property="BackgroundColor" Value="#1A2235" />
+                                        <Setter Property="Stroke" Value="#0A84FF" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
 
-                            <!-- Icono Placeholder (Bot ajustado) -->
-                            <Image Source="dotnet_bot.png" WidthRequest="40" HeightRequest="40" Aspect="AspectFit" Grid.Column="0" VerticalOptions="Center"/>
+                        <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="10">
+                            <!-- Icono -->
+                            <Image Source="{Binding IconoArchivo}" WidthRequest="40" HeightRequest="40" Aspect="AspectFit" Grid.Column="0" VerticalOptions="Center"/>
 
                             <!-- Nombre y Tipo -->
-                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                <Label Text="{Binding Nombre}" FontSize="16" FontAttributes="Bold" TextColor="#333333" LineBreakMode="TailTruncation"/>
-                                <Label Text="{Binding Tipo}" FontSize="12" TextColor="#757575"/>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                                <Label Text="{Binding Nombre}" FontSize="16" FontAttributes="Bold" TextColor="#FFFFFF" LineBreakMode="TailTruncation"/>
+                                <Label Text="{Binding Tipo}" FontSize="13" TextColor="#888888"/>
                             </VerticalStackLayout>
 
-                            <!-- Botón Eliminar (Fondo rojo tenue para indicar peligro) -->
-                            <ImageButton Source="dotnet_bot.png" BackgroundColor="#FFEBEE" CornerRadius="8" WidthRequest="40" HeightRequest="40" Padding="8" Grid.Column="2" Clicked="OnDeleteClicked" CommandParameter="{Binding Id}" VerticalOptions="Center"/>
+                            <!-- Botones de Acción (Descargar, Renombrar, Eliminar) -->
+                            <HorizontalStackLayout Grid.Column="2" VerticalOptions="Center" Spacing="8">
+                                <!-- Botón Descargar (Azul oscuro) -->
+                                <ImageButton Source="descarga.png" BackgroundColor="#1E3A8A" CornerRadius="10" WidthRequest="38" HeightRequest="38" Padding="10" Clicked="OnDownloadClicked" CommandParameter="{Binding Id}"/>
+
+                                <!-- Botón Renombrar (Naranja oscuro) -->
+                                <ImageButton Source="edicion.png" BackgroundColor="#92400E" CornerRadius="10" WidthRequest="38" HeightRequest="38" Padding="10" Clicked="OnRenameClicked" CommandParameter="{Binding Id}"/>
+
+                                <!-- Botón Eliminar (Rojo oscuro) -->
+                                <ImageButton Source="eliminar.png" BackgroundColor="#3A1C1C" CornerRadius="10" WidthRequest="38" HeightRequest="38" Padding="10" Clicked="OnDeleteClicked" CommandParameter="{Binding Id}"/>
+                            </HorizontalStackLayout>
                         </Grid>
                     </Border>
                 </DataTemplate>
@@ -42,17 +65,16 @@
         </CollectionView>
 
         <!-- ZONA MULTIMEDIA -->
-        <Border Grid.Row="2" Stroke="#E0E0E0" StrokeThickness="1" StrokeShape="RoundRectangle 16" BackgroundColor="#121212" Margin="0,10,0,20" HeightRequest="250" Padding="0">
+        <Border Grid.Row="2" Stroke="#2C2C2C" StrokeThickness="1" StrokeShape="RoundRectangle 20" BackgroundColor="#000000" Margin="0,15,0,25" HeightRequest="260" Padding="0">
             <Grid>
-                <!-- Texto de fondo cuando no hay nada seleccionado -->
-                <Label x:Name="LblPlaceholder" Text="Selecciona un archivo para previsualizar" TextColor="#9E9E9E" HorizontalOptions="Center" VerticalOptions="Center" FontSize="14"/>
+                <Label x:Name="LblPlaceholder" Text="Selecciona un archivo" TextColor="#555555" HorizontalOptions="Center" VerticalOptions="Center" FontSize="15" FontAttributes="Bold"/>
 
-                <!-- Controles multimedia -->
                 <toolkit:MediaElement x:Name="ReproductorMultimedia" ShouldAutoPlay="True" ShouldShowPlaybackControls="True" IsVisible="False" Aspect="AspectFit"/>
+
                 <Image x:Name="VisualizadorImagen" Aspect="AspectFit" IsVisible="False" Margin="10"/>
 
-                <ScrollView x:Name="VisualizadorTexto" IsVisible="False" Margin="15">
-                    <Label x:Name="LblContenidoTexto" TextColor="White" FontSize="14" />
+                <ScrollView x:Name="VisualizadorTexto" IsVisible="False" Margin="20">
+                    <Label x:Name="LblContenidoTexto" TextColor="#E0E0E0" FontSize="14" />
                 </ScrollView>
             </Grid>
         </Border>
