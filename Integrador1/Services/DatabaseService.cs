@@ -41,5 +41,14 @@ namespace Integrador1.Services
             await Init();
             await db.DeleteAsync(archivo);
         }
+        public async Task<List<ArchiveDrive>>BuscarPorNombre(string texto)
+        {
+            await Init();
+
+            return await db.Table<ArchiveDrive>()
+                           .Where(x => x.Nombre.Contains(texto))
+                           .ToListAsync();
+        }
+
     }
 }

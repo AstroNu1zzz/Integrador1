@@ -98,6 +98,24 @@ namespace Integrador1
                 CargarArchivos();
             }
         }
+        private async void Buscar(object sender, TextChangedEventArgs e) //Evento TextChanged Se ejecuta cada vez que cambia el texto.
+        {
+            string texto = BuscarBar.Text ?? "";
+
+            if (string.IsNullOrWhiteSpace(texto))
+            {
+                CargarArchivos();
+                return;
+            }
+
+            var archivos = _conexionDb.Table<ArchiveDrive>()
+                              .Where(a => a.UsuarioId == _usuarioIdActual && a.Nombre.Contains(texto))
+                              .ToList();
+
+            // Actualizamos la vista con los resultados
+            ListaArchivos.ItemsSource = archivos;
+        }
+
 
         private async void OnDeleteClicked(object sender, EventArgs e)
         {
