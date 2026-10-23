@@ -115,7 +115,20 @@ namespace Integrador1
             // Actualizamos la vista con los resultados
             ListaArchivos.ItemsSource = archivos;
         }
+        
+        private async void OnPickerChanged(object sender, EventArgs e)
+        {
+            string tipoElegido = PickerArc.SelectedItem.ToString() ?? "";
 
+            if (tipoElegido == "" || tipoElegido == "Todos")
+            {
+                CargarArchivos();
+                return;
+            }
+
+            var archivos = _conexionDb.Table<ArchiveDrive>().Where(a => a.UsuarioId == _usuarioIdActual && a.Tipo.Contains(tipoElegido)).ToList();
+            ListaArchivos.ItemsSource = archivos;
+        }
 
         private async void OnDeleteClicked(object sender, EventArgs e)
         {
